@@ -280,3 +280,6 @@ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
 echo "http://${GATEWAY_URL}/productpage"
 ```
 
+[Back to main README](/README.md)
+[Observability Configuration](/OBSERVABILITY.md)
+
