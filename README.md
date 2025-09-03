@@ -162,36 +162,52 @@ You can deploy gateways using either the Gateway API or the gateway injection me
 
 ### Istio gateway injection method
 
-1. Create the `istio-ingressgateway` deployment and service
+1. create namespace for the gateway called `prod-gateway`
 
 ```bash
- oc apply -f bookinfo/gateway-deployment.yaml -n bookinfo 
- ```
+oc apply -f gateway-injection/namespace.yaml     
+```
 
- Output
- ```bash
+Output
+```bash
+namespace/prod-gateway created
+```
+
+2. Create the `istio-ingressgateway` deployment and service
+
+```bash
+oc apply -f gateway-injection/gateway-deployment.yaml -n prod-gateway 
+```
+
+Output
+```bash
 service/istio-ingressgateway created
 deployment.apps/istio-ingressgateway created
 role.rbac.authorization.k8s.io/istio-ingressgateway-sds created
 rolebinding.rbac.authorization.k8s.io/istio-ingressgateway-sds created
 ```
 
-2. Configure the `bookinfo` application to use the new gateway
+
+3. Configure the `bookinfo` application to use the new gateway
 
 ```bash
-oc apply -f bookinfo/gateway-injection.yaml -n bookinfo 
+oc apply -f bookinfo/gateway-injection.yaml -n prod-gateway 
 ```
 
 Output:
 ```bash
 gateway.networking.istio.io/bookinfo-gateway created
-virtualservice.networking.istio.io/bookinfo created
 ```
 
-3. Use a route to expose the gateway external to the cluster
+*Note: Here we put the Gateway injection in the gateway namespace (`prod-gateway`), assuming 
+the platform team owns ingress, and the application team publishes routes. We 
+could have created this in the `bookinfo` namespace if app teams are fairly self-sufficient and you want them to own their own ingress config.*
+
+
+4. Use a route to expose the gateway external to the cluster
 
 ```bash
-oc apply -f bookinfo/route.yaml -n bookinfo
+oc apply -f gateway-injection/route.yaml -n prod-gateway 
 ```
 
 Output:
@@ -199,19 +215,36 @@ Output:
 route.route.openshift.io/istio-ingressgateway created
 ```
 
-4. Access the bookinfo app through the gateway
+5. Associate the `bookinfo` app's service with the `bookinfo-gateway` using a VirtualService definition
 
 ```bash
-HOST=$(oc get route istio-ingressgateway -n bookinfo -o jsonpath='{.spec.host}')
+oc apply -f bookinfo/virtualservice.yaml -n bookinfo  
+```
+
+Output
+```bash
+virtualservice.networking.istio.io/bookinfo created
+```
+
+```bash
+oc get virtualservice -n bookinfo  
+```
+```bash                             
+NAME       GATEWAYS                            HOSTS   AGE
+bookinfo   ["prod-gateway/bookinfo-gateway"]   ["*"]   77s
+```
+
+6. Access the bookinfo app through the gateway
+
+```bash
+HOST=$(oc get route istio-ingressgateway -n prod-gateway -o jsonpath='{.spec.host}')
 echo productpage URL: https://$HOST/productpage
 ```
 
 TODO: 
-- Move gateway to `prod-gateway` namespace
-- ensure sidecar-injection for gateway
 - implement with Gatway API
 - deploy travel agency app
-- observabolity
+- observability
 - distributed tracing
 - kiali
 - cert management

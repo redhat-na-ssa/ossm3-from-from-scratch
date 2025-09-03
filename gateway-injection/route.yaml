@@ -4,7 +4,6 @@ metadata:
   annotations:
     openshift.io/host.generated: "true"
   name: istio-ingressgateway
-  namespace: bookinfo
 spec:
   port:
     targetPort: http2
