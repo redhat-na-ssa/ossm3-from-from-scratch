@@ -6,10 +6,11 @@ spec:
   namespace: istio-system
   values:
     meshConfig:
+      extensionProviders:
+      - name: otel
+        opentelemetry:
+          port: 4317
+          service: otel-collector.opentelemetrycollector.svc.cluster.local
       discoverySelectors:
         - matchLabels:
             istio-discovery: enabled
-  updateStrategy:
-    type: InPlace
-    inactiveRevisionDeletionGracePeriodSeconds: 30
-  version: v1.26.3

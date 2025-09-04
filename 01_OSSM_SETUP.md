@@ -70,6 +70,14 @@ Output:
 ```bash
 istiocni.sailoperator.io/default created
 ```
+## Deploy Istio Telemetry CRD
+
+Telemetry defines how telemetry (metrics, logs and traces) is generated for workloads within a mesh.
+[Documentation](https://istio.io/latest/docs/reference/config/telemetry/)
+
+```bash
+oc apply -f istio/telemetry.yaml  
+```
 
 ## Deploy test application (Bookinfo)
 

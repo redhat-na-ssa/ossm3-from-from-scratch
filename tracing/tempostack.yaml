@@ -1,22 +1,42 @@
-kind: TempoStack
 apiVersion: tempo.grafana.com/v1alpha1
+kind: TempoStack
 metadata:
-  name: sample
+  name: tempo-stack # this will affect names of resources created i.e. tempo- tempo-stack -distributor.tracing-system.svc.cluster.local
+  namespace: tracing-system
 spec:
   storage:
     secret:
       name: minio-creds
       type: s3
   storageSize: 1Gi
+
+  # REQUIRED when enabling the gateway
+  tenants:
+    mode: openshift
+    authentication:
+      - tenantName: dev
+        tenantId: "1610b0c3-c509-4592-a256-a1871353dbfa"  # any UUID is fine for dev
+
   template:
+    gateway:
+      enabled: true
+      rbac:
+        enabled: false                 # skip per-tenant RBAC for dev
+      ingress:
+        type: route
+        route:
+          termination: reencrypt            # simple TLS at the router
+          insecureEdgeTerminationPolicy: Redirect
+
     querier:
       resources:
         limits:
           cpu: "2"
+
     queryFrontend:
       component:
         resources:
           limits:
             memory: 6Gi
       jaegerQuery:
-        enabled: true
+        enabled: true                 # optional; turn on if you want the Jaeger UI too

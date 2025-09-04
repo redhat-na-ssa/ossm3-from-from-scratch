@@ -14,6 +14,9 @@ Kubernetes Version: v1.31.11
 2. [Observability Integration](/02_OBSERVABILITY.md)
 
 ---
+Note: It may be better to install observability components first then OSSM3
+
+---
 TODO: 
 - observability
 - distributed tracing

@@ -5,6 +5,8 @@
 This document follows the official Red Hat documentation
 [Observability and Service Mesh](https://docs.redhat.com/en/documentation/red_hat_openshift_service_mesh/3.1/html/observability/index)
 [OCP documentation: Configuring user workload monitoring](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/monitoring/configuring-user-workload-monitoring#configuring-performance-and-scalability-uwm)
+[Cluster Observability Operator](https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/cluster_observability_operator/index)
+
 
 Observability is provided by OpenShift monitoring (CMO + UWM) and OpenShift distributed tracing operators.
 
@@ -214,10 +216,66 @@ NAME                                     READY   AGE
 statefulset.apps/tempo-sample-ingester   1/1     100s
 ```
 
+- To get to the url of the tracing UI
 
-4. Depending on your use case, installing your choice of deployment:
+```bash
+export TRACING_ROUTE=$(oc get route -n tracing-system tempo-tempo-stack-gateway -o jsonpath='{.spec.host}')
+export TRACING_UI=https://$TRACING_ROUTE/dev 
+echo $TRACING_UI 
+```
 
+## Cluster Observability Operator and the Cluster Observability Operator distributed tracing UI plugin
 
+[Documentation](https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/cluster_observability_operator/cluster-observability-operator-overview)
 
+The `Cluster Observability Operator (COO)` is an optional component of the OpenShift Container Platform 
+designed for creating and managing highly customizable monitoring stacks. It enables cluster administrators 
+to automate configuration and management of monitoring needs extensively, offering a more tailored and 
+detailed view of each namespace compared to the default OpenShift Container Platform monitoring system.  
+
+The COO components function independently of the default in-cluster monitoring stack, which is deployed 
+and managed by the Cluster Monitoring Operator (CMO). Monitoring stacks deployed by the two Operators do 
+not conflict. You can use a COO monitoring stack in addition to the default platform monitoring components 
+deployed by the CMO.
+
+The distributed tracing UI plugin adds tracing-related features to the OpenShift Container Platform web 
+console at Observe -> Traces. You can follow requests through the front end and into the backend of 
+microservices, helping you identify code errors and performance bottlenecks in distributed systems.
+
+### Installing The `Cluster Observability Operator (COO)`
+
+1. Install the COO operator
+
+```bash
+oc apply -f operators/cluster-observability-operator.yaml  
+```
+
+2. Install the distributed tracing UI plugin
+
+```bash
+oc apply -f plugins/coo-ui-plugin.yaml  
+```
+
+## Red Hat OpenShift distributed tracing data collection
+
+[Documentation](https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/red_hat_build_of_opentelemetry/index)
+
+You can use the Red Hat build of OpenTelemetry in combination with the Red Hat OpenShift Distributed Tracing Platform.
+
+Red Hat build of OpenTelemetry is based on the open source OpenTelemetry project, which aims to provide unified, 
+standardized, and vendor-neutral telemetry data collection for cloud-native software. Red Hat build of OpenTelemetry 
+product provides support for deploying and managing the OpenTelemetry Collector and simplifying the workload instrumentation.
+
+The OpenTelemetry Collector can receive, process, and forward telemetry data in multiple formats, making it the 
+ideal component for telemetry processing and interoperability between telemetry systems. The Collector provides 
+a unified solution for collecting and processing metrics, traces, and logs.
+
+1. Install the Red Hat build of OpenTelemetry Operator
+
+```bash
+oc apply -f operators/opentelemetry-product.yaml    
+```
+
+2. Create 
 ---
 [Back to main README](/README.md)
