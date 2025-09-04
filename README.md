@@ -1,6 +1,6 @@
 # ossm3-from-from-scratch
 Following official RH documentation
-
+---
 Tested on
 ```bash
 Client Version: 4.19.7
@@ -10,9 +10,10 @@ Kubernetes Version: v1.31.11
 ```
 ## Links to sections
 
-- [Installing OpenShift Service Mesh 3 components (Operator/Istio/Gateway)](/OSSM_SETUP.md)
-- [Observability Integration](/OBSERVABILITY.md)
+1. [Installing OpenShift Service Mesh 3 components (Operator/Istio/Gateway)](/01_OSSM_SETUP.md)
+2. [Observability Integration](/02_OBSERVABILITY.md)
 
+---
 TODO: 
 - observability
 - distributed tracing
@@ -20,3 +21,5 @@ TODO:
 - cert management
 - deploy travel agency app
 - ambient mode
+- quickstart component that uses GitOps
+- Vault integration for object storage credentials
