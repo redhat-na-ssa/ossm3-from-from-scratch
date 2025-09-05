@@ -33,3 +33,4 @@ TODO:
 - ambient mode
 - quickstart component that uses GitOps
 - Vault integration for object storage credentials
+- Reorder instructions
