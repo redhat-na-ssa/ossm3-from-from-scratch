@@ -44,12 +44,14 @@ Output:
 NAME                                   READY   STATUS    RESTARTS   AGE
 prometheus-operator-854db99d74-v2fww   2/2     Running   0          117s
 prometheus-user-workload-0             6/6     Running   0          116s
-prometheus-user-workload-1             6/6     Running   0          116s
 thanos-ruler-user-workload-0           4/4     Running   0          115s
-thanos-ruler-user-workload-1           4/4     Running   0          115s
 ```
 
 2. Create a `ServiceMonitor` to monitor the Istio control plane
+
+*Note assumes you have create istio namespaces already*
+
+
 
 ```bash 
 oc apply -f observability/servicemonitor.yaml -n istio-system
@@ -109,7 +111,7 @@ oc get csv -n openshift-tempo-operator
 Output:
 ```bash
 NAME                          DISPLAY                            VERSION    REPLACES                      PHASE
-servicemeshoperator3.v3.1.1   Red Hat OpenShift Service Mesh 3   3.1.1      servicemeshoperator3.v3.1.0   Succeeded
+...
 tempo-operator.v0.16.0-2      Tempo Operator                     0.16.0-2   tempo-operator.v0.16.0-1      Succeeded
 ```
 
@@ -276,6 +278,12 @@ a unified solution for collecting and processing metrics, traces, and logs.
 oc apply -f operators/opentelemetry-product.yaml    
 ```
 
-2. Create 
+2. Create an `opentelemetrycollector`
+
+```bash
+oc apply -f open-telemetry/opentelemetrycollector.yaml
+```
+
+TODO test to see if tracing metrics can be seen
 ---
 [Back to main README](/README.md)

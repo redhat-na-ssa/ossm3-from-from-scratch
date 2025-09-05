@@ -79,6 +79,34 @@ Telemetry defines how telemetry (metrics, logs and traces) is generated for work
 oc apply -f istio/telemetry.yaml  
 ```
 
+## Ensure OpenTelemetry is picked up by the mesh
+
+```bash
+oc -n istio-system logs deploy/istiod | grep -i opentelemetry
+```
+
+Sample Output
+```bash
+opentelemetry:
+    service: otel-collector.opentelemetrycollector.svc.cluster.local
+2025-09-05T17:37:49.440154Z     info    model   Full push, new service opentelemetrycollector/otel-collector.opentelemetrycollector.svc.cluster.local
+2025-09-05T17:37:49.440173Z     info    model   Full push, new service opentelemetrycollector/otel-collector-headless.opentelemetrycollector.svc.cluster.local
+2025-09-05T17:37:49.440188Z     info    model   Full push, new service opentelemetrycollector/otel-collector-monitoring.opentelemetrycollector.svc.cluster.local
+```
+
+istiod log lines mean Istio has picked up your OpenTelemetry extension provider and discovered the Collector services
+
+```bash
+oc -n opentelemetrycollector get svc otel-collector -o wide
+```
+
+Sample Output
+```bash
+NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE   SELECTOR
+otel-collector   ClusterIP   172.30.45.72   <none>        4317/TCP   19h   app.kubernetes.io/component=opentelemetry-collector,app.kubernetes.io/instance=opentelemetrycollector.otel,app.kubernetes.io/managed-by=opentelemetry-operator,app.kubernetes.io/part-of=opentelemetry
+```
+
+
 ## Deploy test application (Bookinfo)
 
 Installing the `bookinfo` example application consists of two main tasks: deploying the application and creating a gateway so the application is accessible outside the cluster.
@@ -189,7 +217,7 @@ rolebinding.rbac.authorization.k8s.io/istio-ingressgateway-sds created
 3. Configure the `bookinfo` application to use the new gateway
 
 ```bash
-oc apply -f bookinfo/gateway-injection.yaml -n prod-gateway 
+oc apply -f gateway-injection/gateway-injection.yaml -n prod-gateway 
 ```
 
 Output:
@@ -288,6 +316,19 @@ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
 echo "http://${GATEWAY_URL}/productpage"
 ```
 
+5. Optional `bookinfo` traffic generator to test that observability is working
+
+- If using gateway injection for ingress
+
+```bash
+export INGRESSHOST=$(oc get route istio-ingressgateway -n prod-gateway -o=jsonpath='{.spec.host}')
+cat ./bookinfo/bookinfo-traffic-gen/traffic-generator-configmap.yaml | ROUTE="http://${INGRESSHOST}/productpage" envsubst | oc -n bookinfo apply -f - 
+oc apply -f ./bookinfo/bookinfo-traffic-gen/traffic-generator.yaml -n bookinfo
+```
+
+- If using Gateway API for ingress
+
+- Go to the Jaeger UI
 
 
 ---

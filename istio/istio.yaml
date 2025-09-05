@@ -1,16 +1,17 @@
+
 apiVersion: sailoperator.io/v1
 kind: Istio
 metadata:
   name: default
-spec:
   namespace: istio-system
+spec:
   values:
     meshConfig:
       extensionProviders:
       - name: otel
         opentelemetry:
-          port: 4317
           service: otel-collector.opentelemetrycollector.svc.cluster.local
+          port: 4317
       discoverySelectors:
-        - matchLabels:
-            istio-discovery: enabled
+      - matchLabels:
+          istio-discovery: enabled

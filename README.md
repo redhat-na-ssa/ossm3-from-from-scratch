@@ -14,6 +14,13 @@ Kubernetes Version: v1.31.11
 2. [Observability Integration](/02_OBSERVABILITY.md)
 
 ---
+## Some useful commands
+
+### restart every Deployment in a namespace
+```bash
+oc -n <namespace> get deploy -o name | xargs -r -L1 oc -n <namespace> rollout restart
+```
+---
 Note: It may be better to install observability components first then OSSM3
 
 ---
