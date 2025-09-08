@@ -20,9 +20,9 @@ spec:
           capabilities: { drop: ["ALL"] }
         env:
         - name: ACCESS
-          valueFrom: { secretKeyRef: { name: minio-creds, key: accesskey } }
+          valueFrom: { secretKeyRef: { name: minio-creds, key: access_key_id } }
         - name: SECRET
-          valueFrom: { secretKeyRef: { name: minio-creds, key: secretkey } }
+          valueFrom: { secretKeyRef: { name: minio-creds, key: access_key_secret } }
         command: ["/bin/sh","-c"]
         args:
         - |

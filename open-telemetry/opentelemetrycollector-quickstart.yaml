@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    istio-discovery: enabled
+  name: opentelemetrycollector
+---
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: otel
+  namespace: opentelemetrycollector
+spec:
+  config:
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+
+# For COO Plugin Config
+    # processors:
+    #   k8sattributes:
+    #     auth_type: serviceAccount
+    #     extract:
+    #       metadata: [k8s.namespace.name, k8s.pod.name, k8s.pod.uid]
+    #     pod_association:
+    #       - sources:
+    #           - from: resource_attribute
+    #             name: k8s.pod.uid
+    #       - sources:
+    #           - from: resource_attribute
+    #             name: k8s.pod.ip
+    #       - sources:
+    #           - from: connection
+    #   batch: {}
+
+    exporters:
+      otlp:
+        endpoint: "tempo-tempo-stack-distributor.tracing-system.svc.cluster.local:4317"
+        tls:
+          insecure: true
+
+# For COO Plugin Config
+        # headers: 
+        #   X-Scope-OrgID: "1610b0c3-c509-4592-a256-a1871353dbfa"      # <<< UUID of single tenant "default"
+        # retry_on_failure: { enabled: true }
+        # sending_queue:
+        #   enabled: true
+        #   num_consumers: 8
+        #   queue_size: 8000
+
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          # processors: [k8sattributes, batch] # For COO Plugin Config
+          processors: []
+          exporters: [otlp]

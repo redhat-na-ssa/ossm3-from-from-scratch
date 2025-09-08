@@ -7,7 +7,5 @@ type: Opaque
 stringData:
   endpoint: http://minio.minio.svc.cluster.local:9000
   bucket: tempo-data
-  accesskey: minioadmin
-  secretkey: minioadmin123
-  access_key_id: minioadmin
-  access_key_secret: minioadmin123
+  access_key_id: minio
+  access_key_secret: minio123

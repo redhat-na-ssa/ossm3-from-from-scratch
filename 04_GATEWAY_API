@@ -1,0 +1,51 @@
+### Gateway API method
+
+The Kubernetes Gateway API deploys a gateway by creating a Gateway resource. In OpenShift Container Platform 4.15 and later, Red Hat OpenShift Service Mesh implements the Gateway API custom resource definitions (CRDs). However, in OpenShift Container Platform 4.18 and earlier, the CRDs are not installed by default. Hence, in OpenShift Container Platform 4.15 through 4.18, you must manually install the CRDs. Starting with OpenShift Container Platform 4.19, these CRDs are automatically installed and managed, and you can no longer create, update, or delete them.
+
+1. Enable the Gateway API CRDs (for OpenShift Container Platform 4.18 and earlier)
+
+```bash
+oc get crd gateways.gateway.networking.k8s.io &> /dev/null ||  { oc kustomize "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v1.0.0" | oc apply -f -; }
+```
+
+Output
+```bash
+customresourcedefinition.apiextensions.k8s.io/gatewayclasses.gateway.networking.k8s.io created
+customresourcedefinition.apiextensions.k8s.io/gateways.gateway.networking.k8s.io created
+customresourcedefinition.apiextensions.k8s.io/httproutes.gateway.networking.k8s.io created
+customresourcedefinition.apiextensions.k8s.io/referencegrants.gateway.networking.k8s.io created
+```
+
+2. Deploy the `Gateway` in `prod-gateway`
+
+```bash
+oc apply -f gateway-api/gateway.yaml -n prod-gateway 
+```
+
+Output
+```bash
+gateway.gateway.networking.k8s.io/prod-ingress created
+```
+
+3. Create an `HTTPRoute` for the `bookinfo` service that will be access via `prod-ingress`
+
+```bash
+oc apply -f bookinfo/httproute.yaml -n bookinfo  
+```
+
+Output:
+```bash
+httproute.gateway.networking.k8s.io/bookinfo created
+```
+
+4. Obtain the URL
+
+```bash
+export INGRESS_HOST=$(oc get gtw prod-ingress -n prod-gateway -o jsonpath='{.status.addresses[0].value}')
+export INGRESS_PORT=$(oc get gtw prod-ingress -n prod-gateway -o jsonpath='{.spec.listeners[?(@.name=="http")].port}')
+export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+echo "https://${GATEWAY_URL}/productpage"
+```
+---
+
+[Back to main README](/README.md) /

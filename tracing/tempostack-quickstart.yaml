@@ -1,0 +1,42 @@
+kind: TempoStack
+apiVersion: tempo.grafana.com/v1alpha1
+metadata:
+  name: tempo-stack
+spec:
+  storage:
+    secret:
+      name: minio-creds
+      type: s3
+  storageSize: 1Gi
+
+  # ✅ Enable multi-tenancy in OpenShift mode and define 1 tenant
+  # tenants:
+  #   mode: openshift
+  #   authentication:
+  #     - tenantName: default
+  #       tenantId: "1610b0c3-c509-4592-a256-a1871353dbfa"  # any unique string/UUI
+
+  template:
+
+    # ✅ Turn on the Gateway with an OpenShift Route so the browser can reach it
+    # gateway:
+    #   enabled: true
+    #   rbac:
+    #     enabled: true           # recommended; lets the console plugin use your OpenShift auth
+    #   ingress:
+    #     type: route
+    #     route:
+    #       termination: reencrypt            # simple TLS at the router
+    #       insecureEdgeTerminationPolicy: Redirect
+
+    querier:
+      resources:
+        limits:
+          cpu: "2"
+    queryFrontend:
+      component:
+        resources:
+          limits:
+            memory: 6Gi
+      jaegerQuery:
+        enabled: true

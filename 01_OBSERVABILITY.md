@@ -46,7 +46,7 @@ prometheus-operator-854db99d74-v2fww   2/2     Running   0          117s
 prometheus-user-workload-0             6/6     Running   0          116s
 thanos-ruler-user-workload-0           4/4     Running   0          115s
 ```
-
+<!-- 
 2. Create a `ServiceMonitor` to monitor the Istio control plane
 
 *Note assumes you have create istio namespaces already*
@@ -81,7 +81,7 @@ podmonitor.monitoring.coreos.com/istio-proxies-monitor created
     - Go to Observe->Metrics
     - Run the query `istio_requests_total`
 
-![Metrics Query Example](/img/image01.png)
+![Metrics Query Example](/img/image01.png) -->
 
 ## Configuring Red Hat OpenShift distributed tracing platform with Service Mesh 
 
@@ -90,7 +90,7 @@ Integrating Red Hat OpenShift distributed tracing platform with Red Hat OpenShif
 ### Tempo installation and configuration
 [Source](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/distributed_tracing/distr-tracing-architecture)
 
-1. Install the Tempo Operator
+<!-- 1. Install the Tempo Operator
 
 ```bash
 oc apply -f operators/tempo-product.yaml 
@@ -113,7 +113,7 @@ Output:
 NAME                          DISPLAY                            VERSION    REPLACES                      PHASE
 ...
 tempo-operator.v0.16.0-2      Tempo Operator                     0.16.0-2   tempo-operator.v0.16.0-1      Succeeded
-```
+``` -->
 
 2. Set up a supported object store and creating a secret for the object store credentials.
 
@@ -151,8 +151,8 @@ echo https://$MINIO_CONSOLE
 
 Default username and password has been set in the secret `secret/minio-creds` as:
 ```yaml
-  accesskey: minioadmin
-  secretkey: minioadmin123
+  accesskey: minio
+  secretkey: minio123
 ``` 
 
 Feel free to modify these.
@@ -176,57 +176,19 @@ oc apply -f minio/minio-creds.yaml -n tracing-system
 
 - Deploy TempoStack
 ```bash
-oc apply -f tracing/tempostack.yaml -n tracing-system
+oc apply -f tracing/tempostack-quickstart.yaml -n tracing-system
+oc wait --for condition=Ready TempoStack/tempo-stack --timeout 150s -n tracing-system
+oc wait --for condition=Available deployment/tempo-tempo-stack-compactor --timeout 150s -n tracing-system
 ```
 
-- Check the status of the tempo-stack components to make sure they are all up and running
+- Expose Tracing UI for Kiali UI Integration (http)
 
 ```bash
-oc get all -n tracing-system 
-```
-Output
-```bash
-NAME                                               READY   STATUS    RESTARTS   AGE
-pod/tempo-sample-compactor-547f94c8c6-mmwcr        1/1     Running   0          100s
-pod/tempo-sample-distributor-6c6d56956-5wfdv       1/1     Running   0          100s
-pod/tempo-sample-ingester-0                        1/1     Running   0          100s
-pod/tempo-sample-querier-5cdcc6b467-cqt4l          1/1     Running   0          100s
-pod/tempo-sample-query-frontend-79944854f5-b4jdl   3/3     Running   0          100s
-
-NAME                                            TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                                                                     AGE
-service/tempo-sample-compactor                  ClusterIP   172.30.66.154    <none>        7946/TCP,3200/TCP                                                           100s
-service/tempo-sample-distributor                ClusterIP   172.30.186.240   <none>        4318/TCP,4317/TCP,3200/TCP,14268/TCP,6831/UDP,6832/UDP,14250/TCP,9411/TCP   100s
-service/tempo-sample-gossip-ring                ClusterIP   None             <none>        7946/TCP                                                                    100s
-service/tempo-sample-ingester                   ClusterIP   172.30.117.217   <none>        3200/TCP,9095/TCP                                                           100s
-service/tempo-sample-querier                    ClusterIP   172.30.145.243   <none>        7946/TCP,3200/TCP,9095/TCP                                                  100s
-service/tempo-sample-query-frontend             ClusterIP   172.30.192.106   <none>        3200/TCP,9095/TCP,16685/TCP,16686/TCP,16687/TCP                             100s
-service/tempo-sample-query-frontend-discovery   ClusterIP   None             <none>        3200/TCP,9095/TCP,9096/TCP,16685/TCP,16686/TCP,16687/TCP                    100s
-
-NAME                                          READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/tempo-sample-compactor        1/1     1            1           100s
-deployment.apps/tempo-sample-distributor      1/1     1            1           100s
-deployment.apps/tempo-sample-querier          1/1     1            1           100s
-deployment.apps/tempo-sample-query-frontend   1/1     1            1           100s
-
-NAME                                                     DESIRED   CURRENT   READY   AGE
-replicaset.apps/tempo-sample-compactor-547f94c8c6        1         1         1       100s
-replicaset.apps/tempo-sample-distributor-6c6d56956       1         1         1       100s
-replicaset.apps/tempo-sample-querier-5cdcc6b467          1         1         1       100s
-replicaset.apps/tempo-sample-query-frontend-79944854f5   1         1         1       100s
-
-NAME                                     READY   AGE
-statefulset.apps/tempo-sample-ingester   1/1     100s
+oc expose svc tempo-tempo-stack-query-frontend --port=jaeger-ui --name=tracing-ui -n tracing-system
+oc get route -n tracing-system tracing-ui -o jsonpath='{.spec.host}'
 ```
 
-- To get to the url of the tracing UI
-
-```bash
-export TRACING_ROUTE=$(oc get route -n tracing-system tempo-tempo-stack-gateway -o jsonpath='{.spec.host}')
-export TRACING_UI=https://$TRACING_ROUTE/dev 
-echo $TRACING_UI 
-```
-
-## Cluster Observability Operator and the Cluster Observability Operator distributed tracing UI plugin
+<!-- ## Cluster Observability Operator and the Cluster Observability Operator distributed tracing UI plugin
 
 [Documentation](https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/cluster_observability_operator/cluster-observability-operator-overview)
 
@@ -244,19 +206,11 @@ The distributed tracing UI plugin adds tracing-related features to the OpenShift
 console at Observe -> Traces. You can follow requests through the front end and into the backend of 
 microservices, helping you identify code errors and performance bottlenecks in distributed systems.
 
-### Installing The `Cluster Observability Operator (COO)`
-
-1. Install the COO operator
-
-```bash
-oc apply -f operators/cluster-observability-operator.yaml  
-```
-
-2. Install the distributed tracing UI plugin
+### Installing The `Cluster Observability Operator (COO) UI plugin`
 
 ```bash
 oc apply -f plugins/coo-ui-plugin.yaml  
-```
+``` -->
 
 ## Red Hat OpenShift distributed tracing data collection
 
@@ -272,18 +226,13 @@ The OpenTelemetry Collector can receive, process, and forward telemetry data in 
 ideal component for telemetry processing and interoperability between telemetry systems. The Collector provides 
 a unified solution for collecting and processing metrics, traces, and logs.
 
-1. Install the Red Hat build of OpenTelemetry Operator
+
+1. Create an `opentelemetrycollector`
 
 ```bash
-oc apply -f operators/opentelemetry-product.yaml    
+oc apply -f open-telemetry/opentelemetrycollector-quickstart.yaml
+oc wait --for condition=Available deployment/otel-collector --timeout 60s -n opentelemetrycollector
 ```
-
-2. Create an `opentelemetrycollector`
-
-```bash
-oc apply -f open-telemetry/opentelemetrycollector.yaml
-```
-
-TODO test to see if tracing metrics can be seen
 ---
-[Back to main README](/README.md)
+[Back to main README](/README.md)/
+[Service Mesh Setup](/02_OSSM_SETUP.md)

@@ -20,7 +20,7 @@ spec:
         image: quay.io/minio/minio:latest
         args:
           - server
-          - /data
+          - /storage
           - "--console-address"
           - ":9001"
         env:
@@ -28,28 +28,28 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: minio-creds
-                key: accesskey
+                key: access_key_id
           - name: MINIO_ROOT_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: minio-creds
-                key: secretkey
+                key: access_key_secret
         ports:
         - containerPort: 9000
           name: api
         - containerPort: 9001
           name: console
         volumeMounts:
-        - name: data
-          mountPath: /data
+        - name: storage
+          mountPath: /storage
   volumeClaimTemplates:
   - metadata:
-      name: data
+      name: storage
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: 10Gi
+          storage: 1Gi
 ---
 apiVersion: v1
 kind: Service
@@ -63,9 +63,11 @@ spec:
     - name: api
       port: 9000
       targetPort: 9000
+      protocol: TCP
     - name: console
       port: 9001
       targetPort: 9001
+      protocol: TCP
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
