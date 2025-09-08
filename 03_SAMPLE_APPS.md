@@ -31,4 +31,4 @@ https://raw.githubusercontent.com/openshift-service-mesh/istio/release-1.24/samp
 ---
 
 [Back to main README](/README.md) /
-[Gateway API Ingress)](/04_GATEWAY_API)
+[Gateway API Ingress)](/04_GATEWAY_API.md)
