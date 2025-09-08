@@ -2,10 +2,10 @@
 
 # Observability Integration
 
-This document follows the official Red Hat documentation
-[Observability and Service Mesh](https://docs.redhat.com/en/documentation/red_hat_openshift_service_mesh/3.1/html/observability/index)
-[OCP documentation: Configuring user workload monitoring](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/monitoring/configuring-user-workload-monitoring#configuring-performance-and-scalability-uwm)
-[Cluster Observability Operator](https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/cluster_observability_operator/index)
+This document follows the official Red Hat documentation.  
+[Observability and Service Mesh](https://docs.redhat.com/en/documentation/red_hat_openshift_service_mesh/3.1/html/observability/index).  
+[OCP documentation: Configuring user workload monitoring](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/monitoring/.  configuring-user-workload-monitoring#configuring-performance-and-scalability-uwm).  
+[Cluster Observability Operator](https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/cluster_observability_operator/index).  
 
 
 Observability is provided by OpenShift monitoring (CMO + UWM) and OpenShift distributed tracing operators.
