@@ -24,8 +24,6 @@ Kubernetes Version: v1.31.11
 ```bash
 oc -n <namespace> get deploy -o name | xargs -r -L1 oc -n <namespace> rollout restart
 ```
----
-Note: It may be better to install observability components first then OSSM3
 
 ---
 TODO: 
