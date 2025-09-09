@@ -37,7 +37,7 @@ spec:
 
     exporters:
       otlp:
-        endpoint: "tempo-tempo-stack-distributor.tracing-system.svc.cluster.local:4317" #FQN of tempo-stat service
+        endpoint: "tempo-tempo-stack-distributor.tracing-system.svc.cluster.local:4317" #FQN of tempo-stack service
         tls:
           insecure: true
 
