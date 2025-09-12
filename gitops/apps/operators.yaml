@@ -1,0 +1,20 @@
+apiVersion: v1
+items:
+- apiVersion: argoproj.io/v1alpha1
+  kind: Application
+  metadata:
+    name: operators
+    namespace: openshift-gitops
+  spec:
+    destination:
+      server: https://kubernetes.default.svc
+    project: default
+    source:
+      path: operators
+      repoURL: https://github.com/bugbiteme/ossm3-from-from-scratch.git
+      targetRevision: dev
+    syncPolicy:
+      automated:
+        selfHeal: true
+kind: List
+metadata: {}
