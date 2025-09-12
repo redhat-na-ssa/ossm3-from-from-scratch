@@ -17,7 +17,5 @@ items:
     syncPolicy:
       automated:
         selfHeal: true
-      syncOptions:
-        - CreateNamespace=true  
 kind: List
 metadata: {}
