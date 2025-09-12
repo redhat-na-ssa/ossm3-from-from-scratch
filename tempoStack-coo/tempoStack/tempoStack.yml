@@ -1,0 +1,81 @@
+apiVersion: tempo.grafana.com/v1alpha1
+kind: TempoStack
+metadata:
+  annotations: {}
+  labels:
+    app.kubernetes.io/managed-by: tempo-operator
+    tempo.grafana.com/distribution: openshift
+  name: tempo
+  namespace: tempo
+spec:
+  hashRing:
+    memberlist: {}
+  images: {}
+  limits:
+    global:
+      ingestion: {}
+      query:
+        maxSearchDuration: 0s
+  managementState: Managed
+  observability:
+    grafana:
+      instanceSelector: {}
+    metrics: {}
+    tracing:
+      jaeger_agent_endpoint: localhost:6831
+  replicationFactor: 1
+  resources: {}
+  retention:
+    global:
+      traces: 48h0m0s
+  search:
+    defaultResultLimit: 20
+    maxDuration: 0s
+  serviceAccount: tempo-tempo
+  storage:
+    secret:
+      name: tempo-s3
+      type: s3
+    tls:
+      enabled: false
+  storageSize: 1Gi
+  template:
+    compactor:
+      replicas: 1
+    distributor:
+      component:
+        replicas: 1
+      tls:
+        enabled: false
+    gateway:
+      component:
+        replicas: 1
+      enabled: true
+      ingress:
+        route:
+          termination: reencrypt
+        type: route
+    ingester:
+      replicas: 1
+    querier:
+      replicas: 1
+    queryFrontend:
+      component:
+        replicas: 1
+      jaegerQuery:
+        enabled: true
+        ingress:
+          route: {}
+        monitorTab:
+          enabled: true
+          prometheusEndpoint: https://thanos-querier.openshift-monitoring.svc.cluster.local:9091
+        servicesQueryDuration: 72h0m0s
+        tempoQuery: {}
+  tenants:
+    authentication:
+      - tenantId: b88a0593-a13e-459c-b204-4d0e56388fdd
+        tenantName: user
+      - tenantId: 7ee23c52-8301-4647-ae53-5314d34fb568
+        tenantName: platform
+    mode: openshift
+  timeout: 30s

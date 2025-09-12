@@ -30,7 +30,13 @@ echo https://$MINIO_CONSOLE
 oc apply -f minio/minio-create-tempo-bucket.yaml 
 ```
 
-4. Install Tempo Stack
+4. Enable user workload monitoring
+
+```bash
+oc apply -f observability/configmap.yaml 
+```
+
+5. Install Tempo Stack
 
 ```bash
 oc apply -f tracing/namespace.yaml  
