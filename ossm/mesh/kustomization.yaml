@@ -6,6 +6,7 @@ resources:
 - namespace.yml
 - namespace-cni.yml
 - rbac.yml
+- rbac-argocd.yml
 - istio.yml
 - telemetry.yml
 

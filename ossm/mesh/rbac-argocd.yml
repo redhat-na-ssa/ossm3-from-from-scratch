@@ -1,0 +1,57 @@
+# (cluster-scoped)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: argocd-sailoperator-writer
+  annotations: {argocd.argoproj.io/sync-wave: "0"}
+rules:
+- apiGroups: ["sailoperator.io"]
+  resources: ["istios","istiocnis"]
+  verbs: ["get","list","watch","create","update","patch","delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: argocd-sailoperator-writer-binding
+  annotations: {argocd.argoproj.io/sync-wave: "0"}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: argocd-sailoperator-writer
+subjects:
+- kind: ServiceAccount
+  name: openshift-gitops-argocd-application-controller
+  namespace: openshift-gitops
+---
+# (namespaced)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: argocd-istio-ns-writer
+  namespace: istio-system
+  annotations: {argocd.argoproj.io/sync-wave: "0"}
+rules:
+- apiGroups: ["telemetry.istio.io"]
+  resources: ["telemetries"]
+  verbs: ["get","list","watch","create","update","patch","delete"]
+- apiGroups: ["opentelemetry.io"]
+  resources: ["opentelemetrycollectors"]
+  verbs: ["get","list","watch","create","update","patch","delete"]
+- apiGroups: [""]
+  resources: ["secrets","configmaps","services","serviceaccounts","persistentvolumeclaims","events","pods","pods/log"]
+  verbs: ["get","list","watch","create","update","patch","delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argocd-istio-ns-writer-binding
+  namespace: istio-system
+  annotations: {argocd.argoproj.io/sync-wave: "0"}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: argocd-istio-ns-writer
+subjects:
+- kind: ServiceAccount
+  name: openshift-gitops-argocd-application-controller
+  namespace: openshift-gitops
