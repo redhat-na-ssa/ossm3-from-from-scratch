@@ -41,29 +41,13 @@ oc apply -f observability/configmap.yaml
 oc create -k tempoStack-coo/observability-plugin
 ```
 
-5. Install Tempo Stack
+5. Install the TempoStack with Multi Tenancy enabled
+
 
 ```bash
-oc apply -f tracing/namespace.yaml  
-oc apply -f minio/minio-creds.yaml -n tracing-system
-oc apply -f tracing/tempostack-quickstart.yaml -n tracing-system
-oc wait --for condition=Ready TempoStack/tempo-stack --timeout 150s -n tracing-system
-oc wait --for condition=Available deployment/tempo-tempo-stack-compactor --timeout 150s -n tracing-system
+oc create -k tempoStack-coo/tempoStack
 ```
 
-5. Expose Tracing UI for Kiali UI Integration (http)
-
-```bash
-oc expose svc tempo-tempo-stack-query-frontend --port=jaeger-ui --name=tracing-ui -n tracing-system
-oc get route -n tracing-system tracing-ui -o jsonpath='{.spec.host}'
-```
-
-6. Install OpenTelemetryCollector
-
-```bash
-oc apply -f open-telemetry/opentelemetrycollector-quickstart.yaml
-oc wait --for condition=Available deployment/otel-collector --timeout 60s -n opentelemetrycollector
-```
 
 7. Install Service Mesh resources
 
