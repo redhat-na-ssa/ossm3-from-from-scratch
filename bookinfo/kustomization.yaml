@@ -4,6 +4,7 @@ resources:
 - namespace.yaml
 - bookinfo.yaml       
 - virtualservice.yaml
+- podmonitor.yaml
 - rbac-argocd.yaml
 
 namespace: bookinfo
