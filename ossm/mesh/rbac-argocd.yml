@@ -55,3 +55,31 @@ subjects:
 - kind: ServiceAccount
   name: openshift-gitops-argocd-application-controller
   namespace: openshift-gitops
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: argocd-monitoring-crds
+  namespace: istio-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"   # apply before SM/PM
+rules:
+- apiGroups: ["monitoring.coreos.com"]
+  resources: ["servicemonitors","podmonitors","prometheusrules"]
+  verbs: ["get","list","watch","create","update","patch","delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argocd-monitoring-crds-binding
+  namespace: istio-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: argocd-monitoring-crds
+subjects:
+- kind: ServiceAccount
+  name: openshift-gitops-argocd-application-controller
+  namespace: openshift-gitops
