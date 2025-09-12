@@ -3,7 +3,7 @@ items:
 - apiVersion: argoproj.io/v1alpha1
   kind: Application
   metadata:
-    name: operators
+    name: minio
     namespace: openshift-gitops
   spec:
     destination:
