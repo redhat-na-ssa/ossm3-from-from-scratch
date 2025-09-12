@@ -1,0 +1,44 @@
+apiVersion: sailoperator.io/v1
+kind: Istio
+metadata:
+  name: default
+  namespace: istio-system
+spec:
+  namespace: istio-system
+  updateStrategy:
+    inactiveRevisionDeletionGracePeriodSeconds: 30
+    type: InPlace
+  # version: v1.24.3
+  values:
+    global:
+      istioNamespace: istio-system
+      logAsJson: true
+      logging:
+        level: "http:debug,http2:debug,router:debug"
+      platform: openshift
+    telemetry:
+      enabled: true
+      v2:
+        enabled: true
+        prometheus:
+          enabled: true
+    meshConfig:
+      defaultProviders:
+        tracing:
+          - otel
+      # discoverySelectors:
+      #   - matchExpressions:
+      #     - key: maistra.io/member-of
+      #       operator: DoesNotExist
+      tlsDefaults:
+        cipherSuites:
+        - TLS_AES_256_GCM_SHA384
+        - TLS_CHACHA20_POLY1305_SHA256
+        - ECDHE-ECDSA-AES256-GCM-SHA384
+        - ECDHE-RSA-AES256-GCM-SHA384
+        minProtocolVersion: "TLSV1_3"
+      extensionProviders:
+        - name: otel
+          opentelemetry:
+            port: 4317
+            service: user-collector.tempo.svc.cluster.local

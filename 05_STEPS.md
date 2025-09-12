@@ -49,15 +49,10 @@ oc create -k tempoStack-coo/tempoStack
 ```
 
 
-7. Install Service Mesh resources
+6. Install Service Mesh resources
 
 ```bash
-oc apply -f istio/namespaces.yaml
-oc apply -f istio/istio.yaml  
-oc wait --for condition=Ready istio/default --timeout 60s  -n istio-system
-oc apply -f istio/telemetry.yaml  
-oc apply -f istio/istio-cni.yaml  
-oc wait --for condition=Ready istiocni/default --timeout 60s -n istio-cni
+
 ```
 
 8. Create ingress-gateway using gateway injection implementation and expose via Route

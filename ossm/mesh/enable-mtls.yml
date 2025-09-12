@@ -1,0 +1,47 @@
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: istio-system
+spec:
+  mtls:
+    mode: STRICT
+---
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: default
+  namespace: istio-system
+spec:
+  host: '*.cluster.local'
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: collector
+  namespace: istio-system
+spec:
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    4317:
+      mode: PERMISSIVE
+  selector:
+    matchLabels:
+      app.kubernetes.io/managed-by: opentelemetry-operator
+      app.kubernetes.io/name: user-collector
+---
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: collector
+  namespace: istio-system
+spec:
+  host: user-collector.istio-system.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+---

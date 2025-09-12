@@ -1,0 +1,26 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: traces-writer-user-istio-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: traces-writer-user
+subjects:
+  - kind: ServiceAccount
+    name: user-collector
+    namespace: istio-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8sattributes-collector-istio-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: k8sattributes-otel-collector
+subjects:
+  - kind: ServiceAccount
+    name: user-collector
+    namespace: istio-system
+---
