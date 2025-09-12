@@ -1,0 +1,48 @@
+# (cluster-wide)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: argocd-namespace-writer
+rules:
+- apiGroups: [""]
+  resources: ["serviceaccounts","services","configmaps","secrets","persistentvolumeclaims","events","pods","pods/log"]
+  verbs: ["get","list","watch","create","update","patch","delete"]
+- apiGroups: ["apps"]
+  resources: ["deployments","replicasets"]
+  verbs: ["get","list","watch","create","update","patch","delete"]
+- apiGroups: ["autoscaling"]
+  resources: ["horizontalpodautoscalers"]
+  verbs: ["get","list","watch","create","update","patch","delete"]
+- apiGroups: ["policy"]
+  resources: ["poddisruptionbudgets"]
+  verbs: ["get","list","watch","create","update","patch","delete"]
+- apiGroups: ["networking.k8s.io"]
+  resources: ["networkpolicies"]
+  verbs: ["get","list","watch","create","update","patch","delete"]
+- apiGroups: ["route.openshift.io"]
+  resources: ["routes"]
+  verbs: ["get","list","watch","create","update","patch","delete"]
+# Istio CRDs
+- apiGroups: ["networking.istio.io"]
+  resources: ["gateways","virtualservices","destinationrules","serviceentries","sidecars","envoyfilters","workloadentries","workloadgroups","proxyconfigs"]
+  verbs: ["get","list","watch","create","update","patch","delete"]
+- apiGroups: ["security.istio.io"]
+  resources: ["authorizationpolicies","peerauthentications","requestauthentications"]
+  verbs: ["get","list","watch","create","update","patch","delete"]
+---
+# (namespace)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argocd-namespace-writer-binding
+  namespace: bookinfo
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"   # ensure RBAC lands first
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: argocd-namespace-writer
+subjects:
+- kind: ServiceAccount
+  name: openshift-gitops-argocd-application-controller
+  namespace: openshift-gitops

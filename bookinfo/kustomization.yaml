@@ -4,5 +4,6 @@ resources:
 - namespace.yaml
 - bookinfo.yaml       
 - virtualservice.yaml
+- rbac-argocd.yaml
 
 namespace: bookinfo
