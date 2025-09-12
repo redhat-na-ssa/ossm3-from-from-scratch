@@ -4,6 +4,7 @@ resources:
 - namespace.yaml   
 - gateway-deployment.yaml        
 - route.yaml
+- gateway-injection.yaml
 - rbac-argocd.yaml
 
 namespace: prod-gateway
