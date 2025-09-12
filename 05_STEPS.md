@@ -35,6 +35,11 @@ oc apply -f minio/minio-create-tempo-bucket.yaml
 ```bash
 oc apply -f observability/configmap.yaml 
 ```
+5. enable cluster observability operator UIPlugin for tracing UI
+
+```bash
+oc create -k tempoStack-coo/observability-plugin
+```
 
 5. Install Tempo Stack
 
