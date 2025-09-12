@@ -18,6 +18,12 @@ oc apply -f minio/minio-creds.yaml -n minio
 oc apply -f minio/minio.yaml -n minio 
 ```
 
+MinIO console
+```bash
+export MINIO_CONSOLE=$(oc -n minio get route minio-console -o jsonpath='{.spec.host}')
+echo https://$MINIO_CONSOLE 
+```
+
 3. Create bucket for tempo-data
 
 ```bash
