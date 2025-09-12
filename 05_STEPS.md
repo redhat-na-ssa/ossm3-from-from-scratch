@@ -52,7 +52,7 @@ oc create -k tempoStack-coo/tempoStack
 6. Install Service Mesh resources
 
 ```bash
-
+oc create -k ossm/mesh
 ```
 
 8. Create ingress-gateway using gateway injection implementation and expose via Route
