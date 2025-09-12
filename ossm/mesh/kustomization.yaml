@@ -9,4 +9,7 @@ resources:
 - rbac-argocd.yml
 - istio.yml
 - telemetry.yml
+- servicemonitor.yaml
+- podmonitor.yaml
+
 
