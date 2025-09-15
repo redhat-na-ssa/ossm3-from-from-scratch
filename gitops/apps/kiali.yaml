@@ -16,6 +16,6 @@ items:
     syncPolicy:
       automated:
         selfHeal: true
-        prune: true
+        # prune: true
 kind: List
 metadata: {}

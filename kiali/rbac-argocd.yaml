@@ -50,28 +50,28 @@ roleRef:
   kind: Role
   name: argocd-ossmconsole-cr-writer
 ---
-# ClusterRole: allow read + delete of OAuthClients
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: argocd-oauthclient-pruner
-rules:
-- apiGroups: ["oauth.openshift.io"]
-  resources: ["oauthclients"]
-  verbs: ["get","list","watch","delete"]
+# # ClusterRole: allow read + delete of OAuthClients
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: ClusterRole
+# metadata:
+#   name: argocd-oauthclient-pruner
+# rules:
+# - apiGroups: ["oauth.openshift.io"]
+#   resources: ["oauthclients"]
+#   verbs: ["get","list","watch","delete"]
 
----
-# Bind to Argo CD app-controller SA
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: argocd-oauthclient-pruner
-subjects:
-- kind: ServiceAccount
-  name: openshift-gitops-argocd-application-controller
-  namespace: openshift-gitops
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: argocd-oauthclient-pruner
+# ---
+# # Bind to Argo CD app-controller SA
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: ClusterRoleBinding
+# metadata:
+#   name: argocd-oauthclient-pruner
+# subjects:
+# - kind: ServiceAccount
+#   name: openshift-gitops-argocd-application-controller
+#   namespace: openshift-gitops
+# roleRef:
+#   apiGroup: rbac.authorization.k8s.io
+#   kind: ClusterRole
+#   name: argocd-oauthclient-pruner
 
