@@ -5,6 +5,8 @@ items:
   metadata:
     name: ossm-istio
     namespace: openshift-gitops
+    annotations:
+      argocd.argoproj.io/sync-wave: "30"
   spec:
     destination:
       server: https://kubernetes.default.svc

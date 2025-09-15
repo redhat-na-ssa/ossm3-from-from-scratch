@@ -5,6 +5,8 @@ items:
   metadata:
     name: kiali
     namespace: openshift-gitops
+    annotations:
+      argocd.argoproj.io/sync-wave: "50"
   spec:
     destination:
       server: https://kubernetes.default.svc
