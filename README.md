@@ -78,7 +78,7 @@ Once everything is up and running, manually install Kiali (WIP)
 oc apply -k kiali
 ```
 
-## Links to sections
+## Links to sections for more information. Please note that procedures may differ than from above
 
 0. [Operator Installation](/00_OPERATORS.md)
 1. [Installing OpenShift Service Mesh 3 components (Operator/Istio/Gateway)](/01_OSSM_SETUP.md)
@@ -98,9 +98,6 @@ oc -n <namespace> get deploy -o name | xargs -r -L1 oc -n <namespace> rollout re
 
 ---
 TODO: 
-- Cluster Observability Operator for Tracing
 - cert management
-- deploy travel agency app
 - ambient mode
-- quickstart component that uses GitOps
 - Vault integration for object storage credentials
