@@ -56,6 +56,13 @@ HOST=$(oc get route istio-ingressgateway -n prod-gateway -o jsonpath='{.spec.hos
 echo productpage URL: https://$HOST/productpage
 ```            
 
+Bookinfo load generator
+```
+export INGRESSHOST=$(oc get route istio-ingressgateway -n prod-gateway -o=jsonpath='{.spec.host}')
+cat ./bookinfo/bookinfo-traffic-gen/traffic-generator-configmap.yaml | ROUTE="https://${INGRESSHOST}/productpage" envsubst | oc -n bookinfo apply -f - 
+oc apply -f ./bookinfo/bookinfo-traffic-gen/traffic-generator.yaml -n bookinfo
+```
+
 ### GitOps (ArgoCD)
 
 ArgoCD Applications are found in the `gitops` directory
@@ -64,6 +71,11 @@ Most components can be deployed all at once with the command
 
 ```
 oc apply -k gitops
+```
+
+Once everything is up and running, manually install Kiali (WIP)
+```
+oc apply -k kiali
 ```
 
 ## Links to sections
