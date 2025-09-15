@@ -1,0 +1,51 @@
+# --- istio-system: allow creating Kiali CRs
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: argocd-kiali-cr-writer
+  namespace: istio-system
+rules:
+- apiGroups: ["kiali.io"]
+  resources: ["kialis"]
+  verbs: ["get","list","watch","create","update","patch","delete"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argocd-kiali-cr-writer
+  namespace: istio-system
+subjects:
+- kind: ServiceAccount
+  name: openshift-gitops-argocd-application-controller
+  namespace: openshift-gitops
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: argocd-kiali-cr-writer
+---
+# --- openshift-operators: allow creating OSSMConsole CRs
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: argocd-ossmconsole-cr-writer
+  namespace: openshift-operators
+rules:
+- apiGroups: ["kiali.io"]
+  resources: ["ossmconsoles"]
+  verbs: ["get","list","watch","create","update","patch","delete"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argocd-ossmconsole-cr-writer
+  namespace: openshift-operators
+subjects:
+- kind: ServiceAccount
+  name: openshift-gitops-argocd-application-controller
+  namespace: openshift-gitops
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: argocd-ossmconsole-cr-writer
