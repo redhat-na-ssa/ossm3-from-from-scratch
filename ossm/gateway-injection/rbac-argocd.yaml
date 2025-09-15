@@ -25,8 +25,6 @@ rules:
 - apiGroups: ["route.openshift.io"]
   resources: ["routes"]
   verbs: ["get","list","watch","create","update","patch","delete"]
-
-# ⬇️ Istio-specific
 - apiGroups: ["networking.istio.io"]
   resources: ["gateways","virtualservices","destinationrules","serviceentries","sidecars","envoyfilters","workloadentries","workloadgroups","proxyconfigs"]
   verbs: ["get","list","watch","create","update","patch","delete"]
