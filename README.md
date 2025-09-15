@@ -5,9 +5,67 @@ Tested on
 ```bash
 Client Version: 4.19.7
 Kustomize Version: v5.5.0
-Server Version: 4.18.22
+Server Version: 4.18.23
 Kubernetes Version: v1.31.11
 ```
+## Quick Setup 
+
+You can manually install each component via the command line
+
+### Operators
+
+```
+oc apply -k operators
+```
+
+### MinIO (for s3 storage)
+
+```
+oc apply -k minio
+```
+
+### Enable User Monnitoring
+
+```
+oc apply -k observability
+```
+
+### Tempo Stack and OpenTelemetry (for distributed Tracing)
+```
+oc apply -k  tempoStack-coo/tempoStack
+oc apply -k tempoStack-coo/observability-plugin
+```
+### Service Mesh Istio System
+``` 
+oc apply -k ossm/mesh
+```
+### Istio Gateway (with gateway-injection)
+```
+oc apply -k ossm/gateway-injection
+```
+
+### Kiali
+```
+oc apply -k kiali
+```
+
+### Sample `bookinfo` App (to test tracing and Kiali)
+```
+oc apply -k bookinfo
+HOST=$(oc get route istio-ingressgateway -n prod-gateway -o jsonpath='{.spec.host}')
+echo productpage URL: https://$HOST/productpage
+```            
+
+### GitOps (ArgoCD)
+
+ArgoCD Applications are found in the `gitops` directory
+
+Most components can be deployed all at once with the command
+
+```
+oc apply -k gitops
+```
+
 ## Links to sections
 
 0. [Operator Installation](/00_OPERATORS.md)
@@ -24,6 +82,7 @@ Kubernetes Version: v1.31.11
 ```bash
 oc -n <namespace> get deploy -o name | xargs -r -L1 oc -n <namespace> rollout restart
 ```
+
 
 ---
 TODO: 
