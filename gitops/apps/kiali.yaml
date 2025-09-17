@@ -13,7 +13,7 @@ items:
     project: default
     source:
       path: kiali
-      repoURL: https://github.com/bugbiteme/ossm3-from-from-scratch.git
+      repoURL: https://github.com/redhat-na-ssa/ossm3-from-from-scratch.git
       targetRevision: main
     syncPolicy:
       automated:
